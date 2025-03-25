@@ -11,6 +11,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.todolist.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var todos: MutableList<String>
+    private lateinit var adapter: ArrayAdapter<String>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //enableEdgeToEdge()
@@ -22,8 +26,13 @@ class MainActivity : AppCompatActivity() {
         val listView: ListView = binding.list
 
         //Создание adapter для ListView
-        val todos: MutableList<String> = mutableListOf()
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, todos)
+        todos = mutableListOf()
+        //Проверка на наличие сохранённых items в ListView
+        if (savedInstanceState != null) {
+            val savedItems = savedInstanceState.getStringArrayList("todos") ?: emptyList()
+            todos.addAll(savedItems)
+        }
+        adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, todos)
         listView.adapter = adapter
 
         //Обработка нажатия на кнопку "добавить"
@@ -37,7 +46,7 @@ class MainActivity : AppCompatActivity() {
             userData.text.clear()
         }
 
-        //Оюработка нажатия кнопки Enter
+        //Обработка нажатия кнопки Enter
         userData.setOnEditorActionListener { _, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE ||
                 (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
@@ -60,5 +69,10 @@ class MainActivity : AppCompatActivity() {
             val text = listView.getItemAtPosition(id.toInt()).toString()
             adapter.remove(text)
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putStringArrayList("todos", ArrayList(todos))
     }
 }
