@@ -38,11 +38,9 @@ class MainActivity : AppCompatActivity() {
         //Обработка нажатия на кнопку "добавить"
         addButton.setOnClickListener {
             val inputText: String = userData.text.toString().trim()
-
             if (inputText != "") {
                 adapter.insert(inputText, 0)
             }
-
             userData.text.clear()
         }
 
@@ -51,13 +49,10 @@ class MainActivity : AppCompatActivity() {
             if (actionId == EditorInfo.IME_ACTION_DONE ||
                 (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
                 val inputText: String = userData.text.toString().trim()
-
                 if (inputText != "") {
                     adapter.insert(inputText, 0)
                 }
-
                 userData.text.clear()
-
                 true
             } else {
                 false
